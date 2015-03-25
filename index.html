@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Flexiblecallback : FlexibleCallback allows for more flexibility in callback functions.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Flexiblecallback</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/schlaus/FlexibleCallback">View on GitHub</a>
+
+          <h1 id="project_title">Flexiblecallback</h1>
+          <h2 id="project_tagline">FlexibleCallback allows for more flexibility in callback functions.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/schlaus/FlexibleCallback/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/schlaus/FlexibleCallback/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="flexiblecallback" class="anchor" href="#flexiblecallback" aria-hidden="true"><span class="octicon octicon-link"></span></a>FlexibleCallback</h1>
+
+<p><a href="https://travis-ci.org/schlaus/FlexibleCallback"><img src="https://img.shields.io/travis/schlaus/FlexibleCallback.svg?style=flat-square" alt="Build Status"></a>
+<a href="https://coveralls.io/r/schlaus/FlexibleCallback?branch=master"><img src="https://img.shields.io/coveralls/schlaus/FlexibleCallback/master.svg?style=flat-square" alt="Coverage Status"></a>
+<a href="https://packagist.org/packages/schlaus/flexiblecallback"><img src="https://img.shields.io/github/release/schlaus/FlexibleCallback.svg?style=flat-square" alt="Latest Version"></a>
+<a href="https://packagist.org/packages/schlaus/flexiblecallback"><img src="https://img.shields.io/packagist/dt/schlaus/FlexibleCallback.svg?style=flat-square" alt="Total Downloads"></a>
+<a href="https://github.com/schlaus/FlexibleCallback/issues"><img src="https://img.shields.io/github/issues/schlaus/FlexibleCallback.svg?style=flat-square" alt="Issues open"></a>
+<a href="http://schlaus.mit-license.org"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT license"></a></p>
+
+<p>FlexibleCallback allows for more flexibility in callback functions.</p>
+
+<p>Specifically, it allows you to:</p>
+
+<ul>
+<li>Unregister callbacks even if it's not otherwise possible</li>
+<li>Change an already registered callback</li>
+<li>Create callback queues</li>
+<li>Simply return values instead of running a function</li>
+</ul>
+
+<h4>
+<a id="so-where-would-i-need-something-like-that" class="anchor" href="#so-where-would-i-need-something-like-that" aria-hidden="true"><span class="octicon octicon-link"></span></a>So where would I need something like that?</h4>
+
+<p>Well, for example <code>register_shutdown_function()</code> won't allow you to unregister or change a callback once it's been registered. FlexibleCallback allows you to circumvent that limitation.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<pre><code>composer require schlaus/flexiblecallback
+</code></pre>
+
+<p>...or just download and include <code>FlexibleCallback.php</code>. There are no dependencies, so you're good to go.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h4>
+<a id="the-basics" class="anchor" href="#the-basics" aria-hidden="true"><span class="octicon octicon-link"></span></a>The basics</h4>
+
+<pre><code>use Schlaus\FlexibleCallback\FlexibleCallback;
+
+$closure = new FlexibleCallback(function() {
+    return "Hello, world!";
+});
+
+$closure();     // "Hello, world!"
+
+// register_shutdown_function($closure);
+
+$plainValue = new FlexibleCallback("I'm a return value");
+
+$plainValue();  // "I'm a return value"
+
+$queue = new FlexibleCallback(
+    array(
+        function() {
+            return "Callback 1";
+        },
+        function() {
+            return "Callback 2";
+        }
+    )
+);
+
+$queue();       // "Callback 2"
+
+$queue-&gt;unregister();
+
+$queue();       // null
+</code></pre>
+
+<h4>
+<a id="change-a-callback-afterwards" class="anchor" href="#change-a-callback-afterwards" aria-hidden="true"><span class="octicon octicon-link"></span></a>Change a callback afterwards</h4>
+
+<pre><code>$callback = new FlexibleCallback("I don't do anything");
+
+$callback-&gt;setCallback("I'm much more useful");
+
+$callback();    // "I'm much more useful"
+
+$callback-&gt;setCallback(function() {
+    return "But I'm the best";
+});
+
+$callback();    // "But I'm the best"
+
+// To enforce a callback type there are two handy methods
+
+$callback = new FlexibleCallback;
+
+$callback-&gt;setReturnValue("I'm a string")   // Only allows non-callables
+
+$callback-&gt;setCallbackFunction(function() { // Only allows callables
+    // Awesome things
+});
+
+$callback-&gt;setCallbackFunction("But I'm not a function!") // InvalidArgumentException
+</code></pre>
+
+<h4>
+<a id="callback-queues" class="anchor" href="#callback-queues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Callback queues</h4>
+
+<pre><code>// Create a queue while you're instancing the class...
+$queue = new FlexibleCallback(array(
+    function() {},
+    function() {},
+    //...
+));
+// NOTE: This is a queue, not a stack. First in is first out.
+
+// ... or change an already existing object into a queue
+$queue = new FlexibleCallback;
+$queue-&gt;pushCallbackFunction(function(){});
+$queue-&gt;pushCallbackFunction(function(){});
+
+// A queue can only contain callables, not values
+$queue = new FlexibleCallback("string");
+$queue-&gt;pushCallbackFunction(function() {
+    return "I'm a function";
+});
+
+$queue();       // "I'm a function"
+</code></pre>
+
+<h4>
+<a id="callback-arguments-in-queues" class="anchor" href="#callback-arguments-in-queues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Callback arguments in queues</h4>
+
+<pre><code>// By default, the same arguments are passed to each callback.
+// If a callback in queue returns false, queue execution stops.
+// It's possible to change this behaviour so, that instead
+// return values are given as the first argument to subsequent
+// callbacks.
+
+$queue = new FlexibleCallback;
+$queue-&gt;includePreviousReturnValue();
+
+$queue = setCallbackFunction(array(
+    function($arg1, $arg2) {
+        // Since this is the first callback, $arg1 is always null
+        // and $arg2 is the first argument passed by the caller
+        return false;
+    },
+    function($arg1, $arg2) {
+        // $arg1 is now false, and $arg2 is the same as it was
+        // in the previous callback.
+    }
+));
+
+
+$queue-&gt;excludePreviousReturnValue(); // back to default
+</code></pre>
+
+<h4>
+<a id="checking-whats-been-loaded" class="anchor" href="#checking-whats-been-loaded" aria-hidden="true"><span class="octicon octicon-link"></span></a>Checking what's been loaded</h4>
+
+<pre><code>$callback = new FlexibleCallback("Testing!");
+
+$callback-&gt;getCallback();   // "Testing!"
+
+$callback-&gt;getType();       // "value"
+
+$callback-&gt;pushCallbackFunction(function() {
+    return "Hello!";
+});
+
+$callback-&gt;getType();       // "callable"
+
+$function = $callback-&gt;getCallback();
+
+$function();                // "Hello!"
+
+$callback-&gt;pushCallbackFunction(/*...*/);
+
+$callback-&gt;getType();       // "queue"
+
+// $queue will contain all callbacks in queue
+$queue = $callback-&gt;getCallback();
+
+$callback-&gt;setReturnValue(null);
+
+$callback-&gt;getType();       // null
+
+$callback-&gt;unregister();
+
+$callback-&gt;getType();       // null
+</code></pre>
+
+<h4>
+<a id="converting-the-queue-to-a-stack-sort-of" class="anchor" href="#converting-the-queue-to-a-stack-sort-of" aria-hidden="true"><span class="octicon octicon-link"></span></a>Converting the queue to a stack (sort of)</h4>
+
+<pre><code>$callback-&gt;setCallbackFunction(
+    array_reverse($callback-&gt;getCallback())
+);
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p><a href="http://schlaus.mit-license.org">MIT</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Flexiblecallback maintained by <a href="https://github.com/schlaus">schlaus</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
