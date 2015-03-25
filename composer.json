@@ -1,5 +1,5 @@
 {
-  "name": "Schlaus/FlexibleCallback",
+  "name": "schlaus/flexiblecallback",
   "description": "FlexibleCallback allows you to unregister or modify callbacks after they have been registered.",
   "minimum-stability": "stable",
   "license": "MIT",
