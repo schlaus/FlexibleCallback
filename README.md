@@ -5,6 +5,8 @@ FlexibleCallback
 [![Coverage Status](https://img.shields.io/coveralls/schlaus/FlexibleCallback/master.svg?style=flat-square)](https://coveralls.io/r/schlaus/FlexibleCallback?branch=master)
 [![Latest Version](https://img.shields.io/github/release/schlaus/FlexibleCallback.svg?style=flat-square)](https://packagist.org/packages/schlaus/flexiblecallback)
 [![Total Downloads](https://img.shields.io/packagist/dt/schlaus/FlexibleCallback.svg?style=flat-square)](https://packagist.org/packages/schlaus/flexiblecallback)
+[![Issues open](https://img.shields.io/github/issues/schlaus/FlexibleCallback.svg?style=flat-square)](https://github.com/schlaus/FlexibleCallback/issues)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](http://schlaus.mit-license.org)
 
 FlexibleCallback allows for more flexibility in callback functions.
 
@@ -21,7 +23,7 @@ Well, for example `register_shutdown_function()` won't allow you to unregister o
 Installation
 ------------
 ```
-composer require Schlaus/FlexibleCallback
+composer require schlaus/flexiblecallback
 ```
 
 ...or just download and include `FlexibleCallback.php`. There are no dependencies, so you're good to go.
