@@ -1,0 +1,19 @@
+{
+  "name": "Schlaus/FlexibleCallback",
+  "description": "FlexibleCallback allows you to unregister or modify callbacks after they have been registered.",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Klaus Karkia",
+      "email": "klaus@karkia.fi"
+    }
+  ],
+  "autoload": {
+    "files": ["./FlexibleCallback.php"]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.5.*",
+    "satooshi/php-coveralls": "dev-master"
+  }
+}
