@@ -22,7 +22,7 @@ Well, for example `register_shutdown_function()` won't allow you to unregister o
 
 Installation
 ------------
-```
+```shel
 composer require schlaus/flexiblecallback
 ```
 
@@ -31,7 +31,7 @@ composer require schlaus/flexiblecallback
 Usage
 -----
 #### The basics
-```
+```php
 use Schlaus\FlexibleCallback\FlexibleCallback;
 
 $closure = new FlexibleCallback(function() {
@@ -65,7 +65,7 @@ $queue();       // null
 ```
 
 #### Change a callback afterwards
-```
+```php
 $callback = new FlexibleCallback("I don't do anything");
 
 $callback->setCallback("I'm much more useful");
@@ -92,7 +92,7 @@ $callback->setCallbackFunction("But I'm not a function!") // InvalidArgumentExce
 ```
 
 #### Callback queues
-```
+```php
 // Create a queue while you're instancing the class...
 $queue = new FlexibleCallback(array(
     function() {},
@@ -116,7 +116,7 @@ $queue();       // "I'm a function"
 ```
 
 #### Callback arguments in queues
-```
+```php
 // By default, the same arguments are passed to each callback.
 // If a callback in queue returns false, queue execution stops.
 // It's possible to change this behaviour so, that instead
@@ -143,7 +143,7 @@ $queue->excludePreviousReturnValue(); // back to default
 ```
 
 #### Checking what's been loaded
-```
+```php
 $callback = new FlexibleCallback("Testing!");
 
 $callback->getCallback();   // "Testing!"
@@ -177,7 +177,7 @@ $callback->getType();       // null
 ```
 
 #### Converting the queue to a stack (sort of)
-```
+```php
 $callback->setCallbackFunction(
     array_reverse($callback->getCallback())
 );
